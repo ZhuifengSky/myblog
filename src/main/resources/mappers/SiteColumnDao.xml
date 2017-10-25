@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.blog.modules.sitecolumn.dao.SiteColumnDao" >
+  <resultMap id="BaseResultMap" type="com.blog.modules.sitecolumn.model.SiteColumn" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
+    <result column="targetUrl" property="targetUrl" jdbcType="VARCHAR" />
+    <result column="openType" property="openType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, sort, targetUrl, openType
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from site_column
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="findList" parameterType="com.blog.modules.sitecolumn.model.SiteColumn" resultMap="BaseResultMap">
+  	  select 
+    <include refid="Base_Column_List" />
+    from site_column
+    <where>
+      <if test="name!=null and name!=''">
+          and name=#{name}
+      </if>
+    </where>
+    order by sort asc
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from site_column
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.blog.modules.sitecolumn.model.SiteColumn" >
+    insert into site_column (id, name, sort, 
+      targetUrl, openType)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, 
+      #{targetUrl,jdbcType=VARCHAR}, #{openType,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.blog.modules.sitecolumn.model.SiteColumn" >
+    insert into site_column
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="sort != null" >
+        sort,
+      </if>
+      <if test="targetUrl != null" >
+        targetUrl,
+      </if>
+      <if test="openType != null" >
+        openType,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="targetUrl != null" >
+        #{targetUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="openType != null" >
+        #{openType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.blog.modules.sitecolumn.model.SiteColumn" >
+    update site_column
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="targetUrl != null" >
+        targetUrl = #{targetUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="openType != null" >
+        openType = #{openType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.blog.modules.sitecolumn.model.SiteColumn" >
+    update site_column
+    set name = #{name,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER},
+      targetUrl = #{targetUrl,jdbcType=VARCHAR},
+      openType = #{openType,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

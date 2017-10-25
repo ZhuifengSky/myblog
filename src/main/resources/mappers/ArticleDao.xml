@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blog.modules.post.dao.ArticleDao">
+  <resultMap id="BaseResultMap" type="com.blog.modules.post.model.Article">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="subTitle" jdbcType="VARCHAR" property="subtitle" />
+    <result column="descStr" jdbcType="VARCHAR" property="descStr" />
+    <result column="authorId" jdbcType="INTEGER" property="authorid" />
+    <result column="categoryId" jdbcType="INTEGER" property="categoryid" />
+    <result column="createDate" jdbcType="TIMESTAMP" property="createdate" />
+    <result column="updateDate" jdbcType="TIMESTAMP" property="updatedate" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.blog.modules.post.model.Article">
+    <result column="content" jdbcType="LONGVARBINARY" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    a.id, a.title, a.subTitle, a.descStr, a.authorId, a.categoryId, a.createDate, a.updateDate
+  </sql>
+  <sql id="Blob_Column_List">
+    a.content,b.`name` as authorName,c.`name` as categoryName
+  </sql>
+  <sql id="joinSql">
+      INNER JOIN author b ON a.authorId=b.id
+      INNER JOIN category c ON a.categoryId=c.id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from article a
+    where a.id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="findList" parameterType="com.blog.modules.post.bean.ArticleBean" resultType="com.blog.modules.post.bean.ArticleBean">
+  		select 
+	    <include refid="Base_Column_List" />
+	    ,
+	    <include refid="Blob_Column_List" /> 
+	    from article a
+	    <include refid="joinSql" />
+	    <where>
+	       <if test="categoryName!=null and categoryName!=''">
+	           and c.name=#{categoryName}
+	       </if>
+	    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from article
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.blog.modules.post.model.Article">
+    insert into article (id, title, subTitle, 
+      descStr, authorId, categoryId, 
+      createDate, updateDate, content
+      )
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{subtitle,jdbcType=VARCHAR}, 
+      #{descStr,jdbcType=VARCHAR}, #{authorid,jdbcType=INTEGER}, #{categoryid,jdbcType=INTEGER}, 
+      #{createdate,jdbcType=TIMESTAMP}, #{updatedate,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARBINARY}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.blog.modules.post.model.Article">
+    insert into article
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="subtitle != null">
+        subTitle,
+      </if>
+      <if test="descStr != null">
+        descStr,
+      </if>
+      <if test="authorid != null">
+        authorId,
+      </if>
+      <if test="categoryid != null">
+        categoryId,
+      </if>
+      <if test="createdate != null">
+        createDate,
+      </if>
+      <if test="updatedate != null">
+        updateDate,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="subtitle != null">
+        #{subtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="descStr != null">
+        #{descStr,jdbcType=VARCHAR},
+      </if>
+      <if test="authorid != null">
+        #{authorid,jdbcType=INTEGER},
+      </if>
+      <if test="categoryid != null">
+        #{categoryid,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null">
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedate != null">
+        #{updatedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARBINARY},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.blog.modules.post.model.Article">
+    update article
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="subtitle != null">
+        subTitle = #{subtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="descStr != null">
+        descStr = #{descStr,jdbcType=VARCHAR},
+      </if>
+      <if test="authorid != null">
+        authorId = #{authorid,jdbcType=INTEGER},
+      </if>
+      <if test="categoryid != null">
+        categoryId = #{categoryid,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null">
+        createDate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedate != null">
+        updateDate = #{updatedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=LONGVARBINARY},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.blog.modules.post.model.Article">
+    update article
+    set title = #{title,jdbcType=VARCHAR},
+      subTitle = #{subtitle,jdbcType=VARCHAR},
+      descStr = #{descStr,jdbcType=VARCHAR},
+      authorId = #{authorid,jdbcType=INTEGER},
+      categoryId = #{categoryid,jdbcType=INTEGER},
+      createDate = #{createdate,jdbcType=TIMESTAMP},
+      updateDate = #{updatedate,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=LONGVARBINARY}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.blog.modules.post.model.Article">
+    update article
+    set title = #{title,jdbcType=VARCHAR},
+      subTitle = #{subtitle,jdbcType=VARCHAR},
+      descStr = #{descStr,jdbcType=VARCHAR},
+      authorId = #{authorid,jdbcType=INTEGER},
+      categoryId = #{categoryid,jdbcType=INTEGER},
+      createDate = #{createdate,jdbcType=TIMESTAMP},
+      updateDate = #{updatedate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update> 
+</mapper>
